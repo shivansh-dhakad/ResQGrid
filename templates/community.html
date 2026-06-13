@@ -1,0 +1,916 @@
+<!doctype html>
+<html class="light" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ResQGrid — Community Dashboard</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet" />
+
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            surface: "#fff8f6",
+            "surface-dim": "#edd5ca",
+            "surface-bright": "#fff8f6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#fff1eb",
+            "surface-container": "#ffeae0",
+            "surface-container-high": "#fce3d8",
+            "surface-container-highest": "#f6ded3",
+            "on-surface": "#251912",
+            "on-surface-variant": "#584236",
+            "inverse-surface": "#3c2d26",
+            "inverse-on-surface": "#ffede6",
+            outline: "#8c7164",
+            "outline-variant": "#e0c0b0",
+            "surface-tint": "#9d4400",
+            primary: "#9d4400",
+            "on-primary": "#ffffff",
+            "primary-container": "#f5700a",
+            "on-primary-container": "#532100",
+            "inverse-primary": "#ffb68f",
+            secondary: "#565e74",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#dae2fd",
+            "on-secondary-container": "#5c647a",
+            tertiary: "#0062a0",
+            "on-tertiary": "#ffffff",
+            "tertiary-container": "#009dfd",
+            "on-tertiary-container": "#003255",
+            error: "#ba1a1a",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            background: "#fff8f6",
+            "on-background": "#251912",
+            "surface-variant": "#f6ded3",
+            success: "#10B981",
+            warning: "#F59E0B",
+            "text-muted": "#64748B",
+            "border-base": "#E2E8F0",
+          },
+          fontFamily: {
+            sans: ["Sora", "sans-serif"],
+            mono: ["JetBrains Mono", "monospace"],
+          },
+          fontSize: {
+            "display-hero": ["24px", { lineHeight: "30px", fontWeight: "800", letterSpacing: "-0.02em" }],
+            "headline-lg": ["18px", { lineHeight: "26px", fontWeight: "700" }],
+            "headline-md": ["16px", { lineHeight: "22px", fontWeight: "700" }],
+            "stat-lg": ["22px", { lineHeight: "28px", fontWeight: "800" }],
+            "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            "label-bold": ["12px", { lineHeight: "16px", fontWeight: "700" }],
+            caption: ["11px", { lineHeight: "14px", fontWeight: "600" }],
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+            sm: "0.25rem",
+            lg: "1rem",
+            xl: "1.5rem",
+            full: "9999px",
+          },
+          boxShadow: {
+            card: "0 1px 4px rgba(15,23,42,0.06), 0 0 0 1px rgba(15,23,42,0.04)",
+            elevated: "0 4px 12px rgba(15,23,42,0.08)",
+            topbar: "0 1px 0 #E2E8F0",
+            bottombar: "0 -4px 12px rgba(15,23,42,0.08)",
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    html, body { height: 100%; font-family: "Sora", sans-serif; background: #f8fafc; color: #251912; }
+    ::-webkit-scrollbar { display: none; }
+    body { -webkit-font-smoothing: antialiased; }
+    .screen { position: fixed; inset: 0; display: none; flex-direction: column; z-index: 10; background: #f8fafc; }
+    .screen.active { display: flex; }
+    .tab-panel { position: absolute; inset: 0; overflow-y: auto; display: none; padding-bottom: calc(80px + env(safe-area-inset-bottom, 0px) + 16px); }
+    .tab-panel.active { display: block; }
+    .press-scale { transition: transform 0.15s ease; }
+    .press-scale:active { transform: scale(0.97); }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; padding: 6px 0; color: #8c7164; }
+    .nav-item.active { color: #9d4400; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(3px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+    .modal-overlay.show { opacity: 1; pointer-events: all; }
+    .modal-sheet { background: #fff; border-radius: 1.5rem 1.5rem 0 0; width: 100%; max-width: 560px; padding: 24px; max-height: 92vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.35s cubic-bezier(0.34,1.2,0.64,1); box-shadow: 0 -8px 32px rgba(15,23,42,0.12); }
+    .modal-overlay.show .modal-sheet { transform: translateY(0); }
+    .modal-handle { width: 36px; height: 4px; background: #e2e8f0; border-radius: 2px; margin: 0 auto 20px; }
+    #toast { position: fixed; bottom: 88px; left: 50%; transform: translateX(-50%) translateY(20px); background: #251912; color: #fff; padding: 10px 20px; border-radius: 999px; font-size: 13px; font-weight: 600; z-index: 500; opacity: 0; pointer-events: none; transition: all 0.25s ease; white-space: nowrap; max-width: 90vw; overflow: hidden; text-overflow: ellipsis; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    #toast.error { background: #ba1a1a; }
+    #toast.success { background: #10B981; }
+    .spinner { width: 22px; height: 22px; border: 3px solid #f6ded3; border-top-color: #9d4400; border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .skeleton { background: linear-gradient(90deg, #f6ded3 25%, #fce3d8 37%, #f6ded3 63%); background-size: 400% 100%; animation: shimmer 1.4s ease infinite; border-radius: 0.5rem; }
+    @keyframes shimmer { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════ GUARD / LOADING SCREEN ════════════════ -->
+  <div id="screen-loading" class="screen active items-center justify-center">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- ════════════════ COMMUNITY DASHBOARD ════════════════ -->
+  <div id="screen-app" class="screen">
+
+    <!-- Top bar -->
+    <header class="bg-surface-container-lowest shadow-topbar px-4 pt-4 pb-3 flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-11 h-11 rounded-full bg-primary-container flex items-center justify-center text-on-primary font-bold text-headline-md shrink-0">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">groups</span>
+        </div>
+        <div class="min-w-0">
+          <p class="text-headline-md truncate" id="org-name">Community</p>
+          <p class="text-caption text-on-surface-variant">Community Leader</p>
+        </div>
+      </div>
+      <button onclick="handleLogout()" class="press-scale w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
+        <span class="material-symbols-outlined text-xl">logout</span>
+      </button>
+    </header>
+
+    <!-- Stat strip -->
+    <div class="px-4 py-3 grid grid-cols-4 gap-2 bg-surface-container-lowest shadow-topbar shrink-0">
+      <div class="text-center">
+        <p class="text-stat-lg text-primary" id="stat-rank">—</p>
+        <p class="text-caption text-on-surface-variant">Rank</p>
+      </div>
+      <div class="text-center">
+        <p class="text-stat-lg" id="stat-members">—</p>
+        <p class="text-caption text-on-surface-variant">Members</p>
+      </div>
+      <div class="text-center">
+        <p class="text-stat-lg" id="stat-requests">—</p>
+        <p class="text-caption text-on-surface-variant">Requests</p>
+      </div>
+      <div class="text-center">
+        <p class="text-stat-lg" id="stat-score">—</p>
+        <p class="text-caption text-on-surface-variant">Points</p>
+      </div>
+    </div>
+
+    <!-- Tab panels -->
+    <main class="flex-1 relative">
+
+      <!-- OVERVIEW -->
+      <div class="tab-panel active px-4 pt-4" id="panel-overview">
+        <div id="location-banner" class="hidden mb-3 bg-orange-50 border border-primary-container rounded-xl p-3 flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <p class="text-body-md font-bold text-on-surface">Community location not set</p>
+            <p class="text-caption text-on-surface-variant">Set it so nearby people can find your community within 30km.</p>
+          </div>
+          <button onclick="setCommunityLocation()" class="press-scale shrink-0 bg-primary-container text-on-primary px-3 py-2 rounded-lg text-label-bold font-bold">
+            Set Now
+          </button>
+        </div>
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-headline-lg">Nearby Alerts <span class="text-caption text-on-surface-variant font-normal">(30 km)</span></h2>
+          <button onclick="setCommunityLocation()" class="press-scale w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0" title="Set community location">
+            <span class="material-symbols-outlined text-xl">my_location</span>
+          </button>
+        </div>
+        <div id="alerts-list" class="space-y-3 mb-2"></div>
+      </div>
+
+      <!-- MEMBERS -->
+      <div class="tab-panel px-4 pt-4" id="panel-members">
+        <h2 class="text-headline-lg mb-3">Members</h2>
+        <div id="members-list" class="space-y-2 mb-5"></div>
+
+        <h2 class="text-headline-lg mb-3 flex items-center gap-2">
+          Join Requests
+          <span id="requests-badge" class="hidden text-caption bg-primary-container text-on-primary rounded-full px-2 py-0.5"></span>
+        </h2>
+        <div id="requests-list" class="space-y-2 mb-5"></div>
+
+        <h2 class="text-headline-lg mb-3">Defaulters</h2>
+        <p class="text-caption text-on-surface-variant mb-2">Members who haven't helped with any emergency yet.</p>
+        <div id="defaulters-list" class="space-y-2"></div>
+      </div>
+
+      <!-- RESOURCES -->
+      <div class="tab-panel px-4 pt-4" id="panel-resources">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-headline-lg">Community Resources</h2>
+          <button onclick="openPostResourceModal()" class="press-scale flex items-center gap-1 bg-primary-container text-on-primary px-3 py-2 rounded-lg text-label-bold font-bold">
+            <span class="material-symbols-outlined text-base">add</span> Post
+          </button>
+        </div>
+        <div id="resources-list" class="space-y-2"></div>
+      </div>
+
+      <!-- RANKINGS -->
+      <div class="tab-panel px-4 pt-4" id="panel-rankings">
+        <div class="bg-surface-container-lowest rounded-xl shadow-card p-4 mb-4">
+          <p class="text-caption text-on-surface-variant">Community Rank</p>
+          <p class="text-display-hero text-primary" id="rank-detail">—</p>
+        </div>
+        <h2 class="text-headline-lg mb-3">Members Leaderboard</h2>
+        <div id="members-rank-list" class="space-y-2"></div>
+      </div>
+
+    </main>
+
+    <!-- Bottom nav -->
+    <nav class="bg-surface-container-lowest shadow-bottombar flex items-center px-2 pb-[env(safe-area-inset-bottom)] shrink-0">
+      <button class="nav-item active press-scale" onclick="switchTab('overview', this)">
+        <span class="material-symbols-outlined">campaign</span>
+        <span class="text-caption">Alerts</span>
+      </button>
+      <button class="nav-item press-scale" onclick="switchTab('members', this)">
+        <span class="material-symbols-outlined">groups</span>
+        <span class="text-caption">Members</span>
+      </button>
+      <button class="nav-item press-scale" onclick="switchTab('resources', this)">
+        <span class="material-symbols-outlined">inventory_2</span>
+        <span class="text-caption">Resources</span>
+      </button>
+      <button class="nav-item press-scale" onclick="switchTab('rankings', this)">
+        <span class="material-symbols-outlined">leaderboard</span>
+        <span class="text-caption">Rankings</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ════════════════ ASSIGN MODAL (with nearby members) ════════════════ -->
+  <div class="modal-overlay" id="assign-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <h3 class="text-headline-lg mb-1" id="assign-modal-title">Assign to Member</h3>
+      <p class="text-caption text-on-surface-variant mb-3" id="assign-modal-subtitle"></p>
+
+      <!-- Nearby members list (for alert assignments) -->
+      <div id="nearby-members-section" class="hidden mb-4">
+        <p class="text-caption font-bold text-on-surface-variant mb-2">📍 Members by proximity</p>
+        <div id="nearby-members-list" class="space-y-2 max-h-64 overflow-y-auto pr-1"></div>
+      </div>
+
+      <!-- Fallback dropdown (always present, used for resource assignments) -->
+      <div id="assign-dropdown-section">
+        <p class="text-caption font-bold text-on-surface-variant mb-1">Or select manually</p>
+        <select id="assign-member-select" class="w-full border border-border-base rounded-lg px-3 py-2.5 text-body-md mb-4 bg-white"></select>
+      </div>
+
+      <button onclick="confirmAssign()" id="assign-confirm-btn" class="press-scale w-full py-3 bg-primary-container text-on-primary rounded-xl font-bold text-body-md">Assign</button>
+      <button onclick="closeModal('assign-modal')" class="press-scale w-full py-3 mt-2 text-on-surface-variant font-bold text-body-md">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ════════════════ DIRECTIONS MODAL ════════════════ -->
+  <div class="modal-overlay" id="directions-modal">
+    <div class="modal-sheet" style="max-height:95vh">
+      <div class="modal-handle"></div>
+      <div class="flex items-center justify-between mb-3">
+        <div>
+          <h3 class="text-headline-lg" id="dir-modal-title">Directions</h3>
+          <p class="text-caption text-on-surface-variant" id="dir-modal-subtitle"></p>
+        </div>
+        <button onclick="closeModal('directions-modal')" class="press-scale w-9 h-9 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant shrink-0">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+      <!-- Map iframe using OpenStreetMap/OSRM route -->
+      <div id="dir-map-container" class="rounded-xl overflow-hidden mb-3" style="height:340px; background:#e8f4f8; position:relative;">
+        <div id="dir-map-loading" class="absolute inset-0 flex flex-col items-center justify-center gap-2">
+          <div class="spinner"></div>
+          <p class="text-caption text-on-surface-variant">Loading map…</p>
+        </div>
+        <iframe id="dir-map-iframe" src="" class="w-full h-full border-0" style="display:none" onload="onMapIframeLoaded()"></iframe>
+      </div>
+      <!-- Route stats row -->
+      <div id="dir-stats" class="hidden flex items-center gap-3 mb-3">
+        <div class="flex-1 bg-surface-container rounded-xl p-3 text-center">
+          <p class="text-stat-lg text-primary" id="dir-distance">—</p>
+          <p class="text-caption text-on-surface-variant">Distance</p>
+        </div>
+        <div class="flex-1 bg-surface-container rounded-xl p-3 text-center">
+          <p class="text-stat-lg text-primary" id="dir-eta">—</p>
+          <p class="text-caption text-on-surface-variant">ETA</p>
+        </div>
+      </div>
+      <!-- Open in Google Maps button -->
+      <a id="dir-gmaps-link" href="#" target="_blank" rel="noopener"
+         class="press-scale flex items-center justify-center gap-2 w-full py-3 bg-primary-container text-on-primary rounded-xl font-bold text-body-md">
+        <span class="material-symbols-outlined text-base">open_in_new</span>
+        Open in Google Maps
+      </a>
+    </div>
+  </div>
+
+  <!-- ════════════════ POST RESOURCE MODAL ════════════════ -->
+  <div class="modal-overlay" id="resource-modal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <h3 class="text-headline-lg mb-4">Post a Resource</h3>
+      <div class="space-y-3">
+        <select id="res-type" class="w-full border border-border-base rounded-lg px-3 py-2.5 text-body-md bg-white">
+          <option value="blood">Blood</option>
+          <option value="food">Food</option>
+          <option value="shelter">Shelter</option>
+          <option value="transport">Transport</option>
+          <option value="medicine">Medicine</option>
+          <option value="equipment">Equipment</option>
+        </select>
+        <input id="res-title" type="text" placeholder="Title" class="w-full border border-border-base rounded-lg px-3 py-2.5 text-body-md" />
+        <textarea id="res-description" placeholder="Description" rows="2" class="w-full border border-border-base rounded-lg px-3 py-2.5 text-body-md"></textarea>
+        <input id="res-quantity" type="number" placeholder="Quantity (optional)" class="w-full border border-border-base rounded-lg px-3 py-2.5 text-body-md" />
+        <input id="res-blood-group" type="text" placeholder="Blood group (optional)" class="w-full border border-border-base rounded-lg px-3 py-2.5 text-body-md" />
+      </div>
+      <button onclick="submitResource()" class="press-scale w-full py-3 mt-4 bg-primary-container text-on-primary rounded-xl font-bold text-body-md">Post Resource</button>
+      <button onclick="closeModal('resource-modal')" class="press-scale w-full py-3 mt-2 text-on-surface-variant font-bold text-body-md">Cancel</button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // ── State ────────────────────────────────────────────────────────────────
+    const STATE = {
+      user: null,
+      ngoId: null,
+      members: [],
+      assignContext: null, // { kind: 'alert'|'resource', id, alertLat, alertLng, alertTitle }
+      selectedMemberId: null,
+    };
+
+    // ── Auth guard ───────────────────────────────────────────────────────────
+    (function init() {
+      const userRaw = localStorage.getItem("rq_user");
+      const qp = new URLSearchParams(location.search);
+      const qpNgo = qp.get("ngo_id");
+      let user = null;
+      try { user = userRaw ? JSON.parse(userRaw) : null; } catch (e) { user = null; }
+
+      if (!user || !user.id || user.user_type !== "ngo") {
+        // Not a logged-in community leader — send back to main app
+        window.location.href = "/";
+        return;
+      }
+      STATE.user = user;
+      STATE.ngoId = qpNgo || user.id;
+
+      document.getElementById("screen-loading").classList.remove("active");
+      document.getElementById("screen-app").classList.add("active");
+
+      document.getElementById("org-name").textContent = user.org_name || user.display_name || user.full_name || "Community";
+      document.getElementById("stat-score").textContent = user.score || 0;
+
+      loadAll();
+    })();
+
+    function handleLogout() {
+      localStorage.removeItem("rq_token");
+      localStorage.removeItem("rq_user");
+      window.location.href = "/";
+    }
+
+    // ── Tabs ─────────────────────────────────────────────────────────────────
+    function switchTab(tab, btn) {
+      document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+      document.getElementById(`panel-${tab}`).classList.add("active");
+      document.querySelectorAll(".nav-item").forEach((n) => n.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+    }
+
+    // ── Toast ────────────────────────────────────────────────────────────────
+    let toastTimer;
+    function showToast(msg, type = "info") {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.className = "";
+      if (type === "error") t.classList.add("error");
+      if (type === "success") t.classList.add("success");
+      t.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => t.classList.remove("show"), 2800);
+    }
+
+    // ── Modal helpers ────────────────────────────────────────────────────────
+    function openModal(id) { document.getElementById(id).classList.add("show"); }
+    function closeModal(id) { document.getElementById(id).classList.remove("show"); }
+
+    // ── API helper ───────────────────────────────────────────────────────────
+    async function api(path, opts) {
+      opts = opts || {};
+      const newOpts = { ...opts };
+      newOpts.headers = new Headers(opts.headers || {});
+      const token = localStorage.getItem("rq_token");
+      if (token && path.startsWith("/api")) {
+        newOpts.headers.set("Authorization", "Bearer " + token);
+      }
+      const res = await fetch(path, newOpts);
+      let data;
+      try { data = await res.json(); } catch (e) { data = {}; }
+      if (!res.ok) throw new Error(data.error || "Request failed");
+      // Flask's success() wraps arrays as JSON arrays directly —
+      // but guard against unexpected object/null just in case.
+      return data;
+    }
+
+    // Safely ensure a value is an array before calling .map/.filter etc.
+    function asArray(v) { return Array.isArray(v) ? v : []; }
+
+    // ── Community location (sets the 30km grid center) ─────────────────────
+    function checkLocationBanner() {
+      const banner = document.getElementById("location-banner");
+      const hasLocation = Number.isFinite(STATE.user?.lat) && Number.isFinite(STATE.user?.lng);
+      banner.classList.toggle("hidden", hasLocation);
+    }
+
+    function setCommunityLocation() {
+      if (!navigator.geolocation) {
+        showToast("Geolocation is not supported on this device", "error");
+        return;
+      }
+      showToast("Getting your location…", "info");
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude;
+          const lng = pos.coords.longitude;
+          try {
+            const data = await api(`/api/communities/${STATE.ngoId}/location`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ leader_id: STATE.ngoId, lat, lng }),
+            });
+            STATE.user.lat = data.lat ?? lat;
+            STATE.user.lng = data.lng ?? lng;
+            localStorage.setItem("rq_user", JSON.stringify(STATE.user));
+            checkLocationBanner();
+            showToast("Community location set! Visible within 30km.", "success");
+          } catch (e) {
+            showToast(e.message, "error");
+          }
+        },
+        () => showToast("Could not get your location. Check location permissions.", "error"),
+        { timeout: 8000 }
+      );
+    }
+
+    // ── Load everything ──────────────────────────────────────────────────────
+    async function loadAll() {
+      checkLocationBanner();
+      await Promise.all([
+        loadMembers(),
+        loadRequests(),
+        loadAlerts(),
+        loadDefaulters(),
+        loadRanks(),
+        loadResources(),
+      ]);
+    }
+
+    // ── Members ──────────────────────────────────────────────────────────────
+    async function loadMembers() {
+      const c = document.getElementById("members-list");
+      c.innerHTML = `<div class="skeleton h-12"></div>`;
+      try {
+        const data = await api(`/api/communities/${STATE.ngoId}/members`);
+        const safeData = asArray(data);
+        STATE.members = safeData.map((m) => m.user).filter(Boolean);
+        document.getElementById("stat-members").textContent = STATE.members.length;
+        if (!safeData.length) { c.innerHTML = `<p class="text-caption text-on-surface-variant">No members yet.</p>`; return; }
+        c.innerHTML = safeData.map((m) => {
+          const u = m.user || {};
+          return `
+          <div class="bg-surface-container-lowest rounded-xl shadow-card p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-headline-md text-primary w-6 shrink-0 text-center">${m.rank ? `#${m.rank}` : "—"}</span>
+              <div class="min-w-0">
+                <p class="text-body-md font-bold truncate">${u.display_name || u.full_name || "Member"}</p>
+                <p class="text-caption text-on-surface-variant">${u.score || 0} pts · ${u.emergencies_helped || 0} helped</p>
+              </div>
+            </div>
+            <button onclick="removeMember('${u.id}')" class="press-scale text-error text-caption font-bold px-3 py-1.5 rounded-lg bg-error-container shrink-0">Remove</button>
+          </div>`;
+        }).join("");
+      } catch (e) {
+        c.innerHTML = `<p class="text-caption text-error">${e.message}</p>`;
+      }
+    }
+
+    async function removeMember(memberId) {
+      if (!confirm("Remove this member from the community?")) return;
+      try {
+        const data = await api(`/api/communities/${STATE.ngoId}/members/${memberId}/remove`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ leader_id: STATE.ngoId }),
+        });
+        showToast(data.message || "Member removed", "success");
+        await Promise.all([loadMembers(), loadRanks(), loadDefaulters()]);
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    // ── Join requests ────────────────────────────────────────────────────────
+    async function loadRequests() {
+      const c = document.getElementById("requests-list");
+      c.innerHTML = `<div class="skeleton h-12"></div>`;
+      try {
+        const data = await api(`/api/communities/${STATE.ngoId}/requests`);
+        const safeData = asArray(data);
+        const badge = document.getElementById("requests-badge");
+        document.getElementById("stat-requests").textContent = safeData.length;
+        if (safeData.length) { badge.textContent = safeData.length; badge.classList.remove("hidden"); }
+        else badge.classList.add("hidden");
+
+        if (!safeData.length) { c.innerHTML = `<p class="text-caption text-on-surface-variant">No pending requests.</p>`; return; }
+        c.innerHTML = safeData.map((r) => {
+          const u = r.user || {};
+          return `
+          <div class="bg-surface-container-lowest rounded-xl shadow-card p-3 flex items-center justify-between">
+            <div class="min-w-0">
+              <p class="text-body-md font-bold truncate">${u.display_name || u.full_name || "User"}</p>
+              <p class="text-caption text-on-surface-variant">${u.city || ""}</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button onclick="respondRequest('${r.id}','approve')" class="press-scale text-success text-caption font-bold px-3 py-1.5 rounded-lg bg-green-50">Approve</button>
+              <button onclick="respondRequest('${r.id}','reject')" class="press-scale text-error text-caption font-bold px-3 py-1.5 rounded-lg bg-error-container">Reject</button>
+            </div>
+          </div>`;
+        }).join("");
+      } catch (e) {
+        c.innerHTML = `<p class="text-caption text-error">${e.message}</p>`;
+      }
+    }
+
+    async function respondRequest(reqId, action) {
+      try {
+        const data = await api(`/api/communities/${STATE.ngoId}/requests/${reqId}/${action}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ leader_id: STATE.ngoId }),
+        });
+        showToast(data.message || "Done", "success");
+        await Promise.all([loadRequests(), loadMembers(), loadRanks(), loadDefaulters()]);
+      } catch (e) {
+        showToast(e.message, "error");
+      }
+    }
+
+    // ── Alerts ───────────────────────────────────────────────────────────────
+    const RISK_STYLES = {
+      critical: "bg-error-container text-on-error-container",
+      high: "bg-orange-100 text-primary",
+      medium: "bg-yellow-100 text-yellow-800",
+      low: "bg-secondary-container text-on-secondary-container",
+    };
+
+    async function loadAlerts() {
+      const c = document.getElementById("alerts-list");
+      c.innerHTML = `<div class="skeleton h-24"></div>`;
+      try {
+        const data = await api(`/api/communities/${STATE.ngoId}/alerts`);
+        const safeData = asArray(data);
+        if (!safeData.length) { c.innerHTML = `<p class="text-caption text-on-surface-variant">No active alerts within 30 km right now.</p>`; return; }
+        c.innerHTML = safeData.map((a) => {
+          const riskClass = RISK_STYLES[a.risk_level] || RISK_STYLES.medium;
+          const memberChips = (a.member_responders || []).map((m) => {
+            const isAssigned = m.status === "assigned";
+            return `<span class="text-caption font-bold ${isAssigned ? 'bg-orange-50 text-primary' : 'bg-green-50 text-success'} px-2 py-0.5 rounded-full">
+              ${isAssigned ? '📌' : '🙋'} ${m.name || 'Member'}
+            </span>`;
+          }).join("");
+          const hasAssigned = (a.member_responders || []).some(m => m.status === "assigned" || m.status === "responding");
+          const safeTitle = (a.title || "").replace(/'/g, "").replace(/"/g, "");
+          const aLat = a.lat || 0, aLng = a.lng || 0;
+          return `
+          <div class="bg-surface-container-lowest rounded-xl shadow-card p-4">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <p class="text-body-md font-bold">${a.title}</p>
+              <span class="text-caption font-bold px-2 py-0.5 rounded-full shrink-0 ${riskClass}">${(a.risk_level || '').toUpperCase()}</span>
+            </div>
+            <p class="text-caption text-on-surface-variant mb-2">${a.category || ''} · ${a.responder_count || 0} responding total</p>
+            <p class="text-body-md mb-2">${a.description || ''}</p>
+            <div class="flex flex-wrap gap-1.5 mb-3">${memberChips || '<span class="text-caption text-on-surface-variant">No community members responding yet</span>'}</div>
+            <div class="flex gap-2">
+              <button onclick="openAssignModal('alert','${a.id}','${safeTitle}','${aLat}','${aLng}')"
+                      class="press-scale flex-1 py-2.5 bg-primary-container text-on-primary rounded-lg text-label-bold font-bold flex items-center justify-center gap-1">
+                <span class="material-symbols-outlined text-base">person_add</span>
+                ${hasAssigned ? 'Reassign' : 'Assign'}
+              </button>
+              ${hasAssigned ? `<button onclick="openDirections('${aLat}','${aLng}','${safeTitle}')"
+                      class="press-scale flex-1 py-2.5 rounded-lg text-label-bold font-bold flex items-center justify-center gap-1"
+                      style="background:#dbeafe;color:#1d4ed8;">
+                <span class="material-symbols-outlined text-base">directions</span>
+                Directions
+              </button>` : ''}
+            </div>
+          </div>`;
+        }).join("");
+      } catch (e) {
+        c.innerHTML = `<p class="text-caption text-error">${e.message}</p>`;
+      }
+    }
+
+    // ── Defaulters ───────────────────────────────────────────────────────────
+    async function loadDefaulters() {
+      const c = document.getElementById("defaulters-list");
+      c.innerHTML = `<div class="skeleton h-10"></div>`;
+      try {
+        const data = await api(`/api/communities/${STATE.ngoId}/defaulters`);
+        const safeData = asArray(data);
+        if (!safeData.length) { c.innerHTML = `<p class="text-caption text-on-surface-variant">No defaulters — everyone has pitched in!</p>`; return; }
+        c.innerHTML = safeData.map((d) => `
+          <div class="bg-surface-container-lowest rounded-xl shadow-card p-3 flex items-center justify-between">
+            <p class="text-body-md font-bold">${d.display_name || d.full_name || "Member"}</p>
+            <span class="text-caption text-on-surface-variant">${d.score || 0} pts</span>
+          </div>`).join("");
+      } catch (e) {
+        c.innerHTML = `<p class="text-caption text-error">${e.message}</p>`;
+      }
+    }
+
+    // ── Ranks ────────────────────────────────────────────────────────────────
+    async function loadRanks() {
+      try {
+        const cr = await api(`/api/communities/${STATE.ngoId}/rank`);
+        document.getElementById("stat-rank").textContent = cr.rank ? `#${cr.rank}` : "—";
+        document.getElementById("rank-detail").textContent = cr.rank ? `#${cr.rank} of ${cr.total}` : "Unranked";
+      } catch (e) { /* ignore */ }
+
+      const c = document.getElementById("members-rank-list");
+      c.innerHTML = `<div class="skeleton h-10"></div>`;
+      try {
+        const mr = await api(`/api/communities/${STATE.ngoId}/members/rank`);
+        const safeMr = asArray(mr);
+        if (!safeMr.length) { c.innerHTML = `<p class="text-caption text-on-surface-variant">No members yet.</p>`; return; }
+        c.innerHTML = safeMr.map((m, i) => `
+          <div class="bg-surface-container-lowest rounded-xl shadow-card p-3 flex items-center justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-headline-md text-primary w-6 shrink-0">${i + 1}</span>
+              <p class="text-body-md font-bold truncate">${m.display_name || m.full_name || "Member"}</p>
+            </div>
+            <span class="text-caption font-bold text-on-surface-variant shrink-0">${m.score || 0} pts</span>
+          </div>`).join("");
+      } catch (e) {
+        c.innerHTML = `<p class="text-caption text-error">${e.message}</p>`;
+      }
+    }
+
+    // ── Resources ────────────────────────────────────────────────────────────
+    async function loadResources() {
+      const c = document.getElementById("resources-list");
+      c.innerHTML = `<div class="skeleton h-16"></div>`;
+      try {
+        const data = await api(`/api/resources?mine=true&user_id=${STATE.ngoId}`);
+        const safeData = asArray(data);
+        if (!safeData.length) { c.innerHTML = `<p class="text-caption text-on-surface-variant">No resources posted yet.</p>`; return; }
+        c.innerHTML = safeData.map((r) => `
+          <div class="bg-surface-container-lowest rounded-xl shadow-card p-4">
+            <div class="flex items-start justify-between gap-2 mb-1">
+              <p class="text-body-md font-bold">${r.title}</p>
+              <span class="text-caption font-bold px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container shrink-0">${r.type}</span>
+            </div>
+            <p class="text-caption text-on-surface-variant mb-2">${r.description || ''}</p>
+            <button onclick="openAssignModal('resource','${r.id}','${(r.title||'').replace(/'/g,"")}')" class="press-scale w-full py-2.5 bg-primary-container text-on-primary rounded-lg text-label-bold font-bold">
+              Assign to Member
+            </button>
+          </div>`).join("");
+      } catch (e) {
+        c.innerHTML = `<p class="text-caption text-error">${e.message}</p>`;
+      }
+    }
+
+    // ── Post resource ────────────────────────────────────────────────────────
+    function openPostResourceModal() {
+      document.getElementById("res-type").value = "blood";
+      document.getElementById("res-title").value = "";
+      document.getElementById("res-description").value = "";
+      document.getElementById("res-quantity").value = "";
+      document.getElementById("res-blood-group").value = "";
+      openModal("resource-modal");
+    }
+
+    async function submitResource() {
+      const title = document.getElementById("res-title").value.trim();
+      if (!title) { showToast("Title is required", "error"); return; }
+      const finish = async (lat, lng) => {
+        try {
+          const payload = {
+            leader_id: STATE.ngoId,
+            type: document.getElementById("res-type").value,
+            title,
+            description: document.getElementById("res-description").value.trim(),
+            quantity: document.getElementById("res-quantity").value || null,
+            blood_group: document.getElementById("res-blood-group").value.trim() || null,
+            lat, lng,
+          };
+          await api(`/api/communities/${STATE.ngoId}/resources`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          showToast("Resource posted", "success");
+          closeModal("resource-modal");
+          loadResources();
+        } catch (e) {
+          showToast(e.message, "error");
+        }
+      };
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => finish(pos.coords.latitude, pos.coords.longitude),
+          () => finish(STATE.user.lat || 0, STATE.user.lng || 0),
+          { timeout: 5000 }
+        );
+      } else {
+        finish(STATE.user.lat || 0, STATE.user.lng || 0);
+      }
+    }
+
+    // ── Assign modal (alerts + resources) ───────────────────────────────────
+    async function openAssignModal(kind, id, title, alertLat, alertLng) {
+      if (!STATE.members.length) { showToast("No approved members to assign", "error"); return; }
+      STATE.assignContext = { kind, id, alertLat: parseFloat(alertLat) || null, alertLng: parseFloat(alertLng) || null, alertTitle: title };
+      STATE.selectedMemberId = null;
+
+      document.getElementById("assign-modal-title").textContent =
+        kind === "alert" ? "Assign Alert to Member" : "Assign Resource to Member";
+      document.getElementById("assign-modal-subtitle").textContent = title || "";
+
+      const nearbySection = document.getElementById("nearby-members-section");
+      const dropdownSection = document.getElementById("assign-dropdown-section");
+      const sel = document.getElementById("assign-member-select");
+
+      // Always populate dropdown as fallback
+      sel.innerHTML = STATE.members.map((m) =>
+        `<option value="${m.id}">${m.display_name || m.full_name || "Member"}</option>`
+      ).join("");
+
+      if (kind === "alert") {
+        // Show nearby-sorted list for alert assignments
+        nearbySection.classList.remove("hidden");
+        dropdownSection.querySelector("p").textContent = "Or pick from list";
+        const listEl = document.getElementById("nearby-members-list");
+        listEl.innerHTML = `<div class="skeleton h-10"></div><div class="skeleton h-10 mt-2"></div>`;
+        openModal("assign-modal");
+
+        try {
+          const nearby = await api(`/api/communities/${STATE.ngoId}/alerts/${id}/nearby-members`);
+          const safeNearby = Array.isArray(nearby) ? nearby : [];
+
+          if (!safeNearby.length) {
+            listEl.innerHTML = `<p class="text-caption text-on-surface-variant">No member location data available.</p>`;
+          } else {
+            // Auto-select first member (closest)
+            STATE.selectedMemberId = safeNearby[0].id;
+            sel.value = safeNearby[0].id;
+
+            listEl.innerHTML = safeNearby.map((m, i) => {
+              const dist = m.distance_km != null
+                ? `${m.distance_km < 1 ? (m.distance_km * 1000).toFixed(0) + " m" : m.distance_km.toFixed(1) + " km"} away`
+                : "Location unknown";
+              const statusBadge = m.responder_status
+                ? `<span class="text-caption font-bold px-2 py-0.5 rounded-full ${m.responder_status === 'assigned' ? 'bg-orange-100 text-primary' : 'bg-green-50 text-success'}">${m.responder_status === 'assigned' ? '📌 Assigned' : '🙋 Responding'}</span>`
+                : "";
+              const isSelected = i === 0;
+              return `
+              <div id="nearby-member-${m.id}"
+                   onclick="selectNearbyMember('${m.id}')"
+                   class="nearby-member-card cursor-pointer rounded-xl p-3 border-2 transition-all ${isSelected ? 'border-primary bg-surface-container-low' : 'border-transparent bg-surface-container'} flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2 min-w-0">
+                  <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary font-bold text-caption shrink-0">${i + 1}</div>
+                  <div class="min-w-0">
+                    <p class="text-body-md font-bold truncate">${m.display_name}</p>
+                    <p class="text-caption text-on-surface-variant">${dist} · ${m.emergencies_helped || 0} helped</p>
+                  </div>
+                </div>
+                <div class="flex flex-col items-end gap-1 shrink-0">
+                  ${statusBadge}
+                  ${m.distance_km != null
+                    ? `<span class="text-caption font-bold text-primary">${m.distance_km < 1 ? (m.distance_km * 1000).toFixed(0) + "m" : m.distance_km.toFixed(1) + "km"}</span>`
+                    : `<span class="text-caption text-on-surface-variant">?</span>`}
+                </div>
+              </div>`;
+            }).join("");
+          }
+        } catch (e) {
+          listEl.innerHTML = `<p class="text-caption text-error">${e.message}</p>`;
+        }
+      } else {
+        // Resource assignment: just use dropdown
+        nearbySection.classList.add("hidden");
+        openModal("assign-modal");
+      }
+    }
+
+    function selectNearbyMember(memberId) {
+      STATE.selectedMemberId = memberId;
+      // Sync dropdown
+      document.getElementById("assign-member-select").value = memberId;
+      // Update card styles
+      document.querySelectorAll(".nearby-member-card").forEach((el) => {
+        el.classList.remove("border-primary", "bg-surface-container-low");
+        el.classList.add("border-transparent", "bg-surface-container");
+      });
+      const card = document.getElementById(`nearby-member-${memberId}`);
+      if (card) {
+        card.classList.add("border-primary", "bg-surface-container-low");
+        card.classList.remove("border-transparent", "bg-surface-container");
+      }
+    }
+
+    async function confirmAssign() {
+      const ctx = STATE.assignContext;
+      if (!ctx) return;
+      // Prefer the nearby-list selection, then fall back to dropdown
+      const memberId = STATE.selectedMemberId || document.getElementById("assign-member-select").value;
+      if (!memberId) { showToast("Please select a member", "error"); return; }
+
+      const btn = document.getElementById("assign-confirm-btn");
+      btn.disabled = true;
+      btn.textContent = "Assigning…";
+
+      try {
+        if (ctx.kind === "alert") {
+          const data = await api(`/api/communities/${STATE.ngoId}/alerts/${ctx.id}/assign`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ leader_id: STATE.ngoId, member_id: memberId }),
+          });
+          showToast(`✅ ${data.member_name || "Member"} assigned — notified in chat`, "success");
+          closeModal("assign-modal");
+          await loadAlerts();
+        } else {
+          const data = await api(`/api/communities/${STATE.ngoId}/resources/${ctx.id}/assign`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ leader_id: STATE.ngoId, member_id: memberId }),
+          });
+          showToast(data.message || "Assigned", "success");
+          closeModal("assign-modal");
+        }
+      } catch (e) {
+        showToast(e.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Assign";
+      }
+    }
+
+    // ── Directions modal ─────────────────────────────────────────────────────
+    function openDirections(alertLat, alertLng, alertTitle) {
+      const lat = parseFloat(alertLat);
+      const lng = parseFloat(alertLng);
+      if (!lat || !lng) { showToast("Alert location not available", "error"); return; }
+
+      document.getElementById("dir-modal-title").textContent = alertTitle || "Directions";
+      document.getElementById("dir-modal-subtitle").textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+
+      // Google Maps directions link (works even without user location)
+      const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=driving`;
+      document.getElementById("dir-gmaps-link").href = gmapsUrl;
+
+      // Embed OpenStreetMap with a marker at the alert location
+      const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${lng-0.03},${lat-0.03},${lng+0.03},${lat+0.03}&layer=mapnik&marker=${lat},${lng}`;
+      const iframe = document.getElementById("dir-map-iframe");
+      iframe.style.display = "none";
+      document.getElementById("dir-map-loading").style.display = "flex";
+      iframe.src = osmUrl;
+
+      // Compute distance from user to alert if user has location
+      const userLat = STATE.user?.lat, userLng = STATE.user?.lng;
+      const statsEl = document.getElementById("dir-stats");
+      if (userLat && userLng) {
+        const dist = haversineKm(userLat, userLng, lat, lng);
+        document.getElementById("dir-distance").textContent = dist < 1 ? `${(dist*1000).toFixed(0)} m` : `${dist.toFixed(1)} km`;
+        const etaMins = Math.round((dist / 40) * 60); // rough 40 km/h car estimate
+        document.getElementById("dir-eta").textContent = etaMins < 60 ? `~${etaMins} min` : `~${(etaMins/60).toFixed(1)} hr`;
+        statsEl.classList.remove("hidden");
+      } else {
+        statsEl.classList.add("hidden");
+      }
+
+      openModal("directions-modal");
+    }
+
+    function onMapIframeLoaded() {
+      document.getElementById("dir-map-loading").style.display = "none";
+      document.getElementById("dir-map-iframe").style.display = "block";
+    }
+
+    function haversineKm(lat1, lng1, lat2, lng2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)**2 +
+                Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+                Math.sin(dLng/2)**2;
+      return 2 * R * Math.asin(Math.sqrt(a));
+    }
+  </script>
+</body>
+</html>
