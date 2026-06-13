@@ -1,0 +1,66 @@
+    <!-- ════════════════════════════ ADMIN SCREEN ════════════════════════════ -->
+    <div class="screen" id="screen-admin">
+      <header
+        class="bg-white border-b border-border-base flex items-center justify-between px-page-margin h-touch-target flex-shrink-0"
+        style="min-height: 60px"
+      >
+        <div class="flex items-center gap-2">
+          <span
+            class="material-symbols-outlined text-primary"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >shield</span
+          >
+          <span class="text-headline-md text-on-surface font-bold"
+            >Admin Console</span
+          >
+          <span
+            class="text-caption font-bold text-tertiary border border-tertiary/30 bg-blue-50 px-2 py-0.5 rounded-full"
+            >ResQGrid</span
+          >
+        </div>
+        <button
+          onclick="handleLogout()"
+          class="text-caption text-text-muted font-semibold hover:text-danger transition-colors"
+        >
+          Sign Out
+        </button>
+      </header>
+      <div
+        class="flex gap-2 overflow-x-auto px-page-margin py-3 bg-white border-b border-border-base flex-shrink-0"
+      >
+        <button
+          onclick="switchAdminTab('overview', this)"
+          class="whitespace-nowrap px-4 py-2 rounded-full text-label-bold font-bold bg-primary-container text-white admin-chip"
+        >
+          Overview
+        </button>
+        <button
+          onclick="switchAdminTab('users', this)"
+          class="whitespace-nowrap px-4 py-2 rounded-full text-label-bold font-bold bg-surface-container text-on-surface-variant admin-chip"
+        >
+          Users
+        </button>
+        <button
+          onclick="switchAdminTab('reports', this)"
+          class="whitespace-nowrap px-4 py-2 rounded-full text-label-bold font-bold bg-surface-container text-on-surface-variant admin-chip"
+        >
+          Alerts & Reports
+        </button>
+        <button
+          onclick="switchAdminTab('activity', this)"
+          class="whitespace-nowrap px-4 py-2 rounded-full text-label-bold font-bold bg-surface-container text-on-surface-variant admin-chip"
+        >
+          Activity
+        </button>
+        <button
+          onclick="switchAdminTab('sos', this)"
+          class="whitespace-nowrap px-4 py-2 rounded-full text-label-bold font-bold bg-surface-container text-on-surface-variant admin-chip"
+        >
+          SOS Events
+        </button>
+      </div>
+      <div
+        class="flex-1 overflow-y-auto px-page-margin py-5 max-w-4xl mx-auto"
+        id="admin-content"
+      ></div>
+    </div>
