@@ -1,0 +1,36 @@
+        <!-- ── ALERTS TAB ── -->
+        <div class="tab-panel" id="panel-alerts">
+          <main class="max-w-3xl mx-auto px-page-margin pb-8">
+            <section class="py-5">
+              <h2 class="text-headline-lg text-on-surface font-bold">Alerts</h2>
+              <p class="text-body-md text-text-muted">
+                Emergency requests in your area
+              </p>
+            </section>
+            <!-- Segment -->
+            <div class="flex gap-1 p-1 bg-surface-container rounded-xl mb-5">
+              <button
+                onclick="switchAlertSeg('nearby', this)"
+                id="seg-nearby"
+                class="flex-1 py-2 rounded-lg text-label-bold font-bold text-primary bg-white shadow-sm transition-all"
+              >
+                Nearby
+              </button>
+              <button
+                onclick="switchAlertSeg('mine', this)"
+                id="seg-mine"
+                class="flex-1 py-2 rounded-lg text-label-bold font-bold text-on-surface-variant hover:bg-surface-container-high transition-all"
+              >
+                My Alerts
+              </button>
+              <button
+                onclick="switchAlertSeg('responding', this)"
+                id="seg-responding"
+                class="flex-1 py-2 rounded-lg text-label-bold font-bold text-on-surface-variant hover:bg-surface-container-high transition-all"
+              >
+                Responding
+              </button>
+            </div>
+            <div id="alerts-list" class="space-y-3"></div>
+          </main>
+        </div>
