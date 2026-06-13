@@ -1,0 +1,21 @@
+    <!-- ════════════════════════════ MAIN APP ════════════════════════════ -->
+    <div class="screen" id="screen-app">
+      {% include "partials/app_header.html" %}
+
+      <!-- CONTENT AREA -->
+      <div class="flex-1 relative overflow-hidden">
+        {% include "partials/tabs/home.html" %}
+
+        {% include "partials/tabs/map.html" %}
+
+        {% include "partials/tabs/alerts.html" %}
+
+        {% include "partials/tabs/community.html" %}
+
+        {% include "partials/tabs/settings.html" %}
+      </div>
+      <!-- end content area -->
+
+      {% include "partials/bottom_nav.html" %}
+    </div>
+    <!-- end screen-app -->

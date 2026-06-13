@@ -1,0 +1,398 @@
+    <!-- ════════════════════════════ AUTH SCREEN ════════════════════════════ -->
+    <div
+      class="screen active"
+      id="screen-auth"
+      style="
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+        flex-direction: column;
+        gap: 16px;
+      "
+    >
+      <!-- Brand header (Clickable 5 times for Admin access) -->
+      <div
+        onclick="handleLogoClick()"
+        style="
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          margin-bottom: 4px;
+          cursor: pointer;
+        "
+        title="ResQGrid Core (Secret access)"
+      >
+        <img
+          src="/static/assets/logo.png"
+          alt="ResQGrid"
+          style="
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0, 151, 167, 0.3));
+          "
+          onerror="this.style.display = 'none'"
+        />
+        <div>
+          <div
+            style="
+              font-size: 13px;
+              font-weight: 800;
+              letter-spacing: 0.14em;
+              color: #0d1f2d;
+              text-transform: uppercase;
+            "
+          >
+            ResQGrid
+          </div>
+          <div
+            style="
+              font-size: 9px;
+              font-weight: 600;
+              letter-spacing: 0.12em;
+              color: #6b8a96;
+              text-transform: uppercase;
+            "
+          >
+            Ver.1.0.0-Stable
+          </div>
+        </div>
+      </div>
+
+      <!-- Card with corner brackets -->
+      <div class="auth-card-wrap auth-card-inner-tl auth-card-inner-br">
+        <div
+          style="
+            background: #ffffff;
+            border: 1.5px solid #c8dde8;
+            border-radius: 4px;
+            padding: 28px 28px 24px;
+            box-shadow: 0 4px 24px rgba(0, 80, 100, 0.08);
+          "
+        >
+          <!-- Welcome -->
+          <h1
+            style="
+              font-size: 26px;
+              font-weight: 800;
+              color: #0d1f2d;
+              margin: 0 0 4px;
+            "
+          >
+            Welcome Back
+          </h1>
+          <p
+            style="
+              font-size: 10px;
+              font-weight: 700;
+              letter-spacing: 0.1em;
+              text-transform: uppercase;
+              color: #6b8a96;
+              margin: 0 0 20px;
+            "
+          >
+            Sign in to your account
+          </p>
+
+          <!-- Auth Tabs -->
+          <div
+            style="
+              display: flex;
+              gap: 4px;
+              padding: 4px;
+              background: #eef3f7;
+              border-radius: 6px;
+              margin-bottom: 20px;
+            "
+          >
+            <button
+              id="tab-login"
+              onclick="switchAuthTab('login')"
+              class="auth-tab-btn active"
+            >
+              Sign In
+            </button>
+            <button
+              id="tab-register"
+              onclick="switchAuthTab('register')"
+              class="auth-tab-btn"
+            >
+              Create Account
+            </button>
+          </div>
+
+          <!-- LOGIN -->
+          <div id="auth-login">
+            <div style="margin-bottom: 14px">
+              <label class="auth-label">Operator ID / Email</label>
+              <input
+                id="login-email"
+                type="email"
+                placeholder="you@example.com"
+                class="auth-input"
+              />
+            </div>
+            <div style="margin-bottom: 6px">
+              <label class="auth-label">Security Key</label>
+              <div style="position:relative">
+                <input
+                  id="login-password"
+                  type="password"
+                  placeholder="••••••••••••"
+                  class="auth-input"
+                  style="padding-right:42px"
+                />
+                <button type="button" onclick="togglePasswordVisibility('login-password', this)"
+                  style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;color:#6b8a96;display:flex;align-items:center">
+                  <span class="material-symbols-outlined" style="font-size:20px">visibility</span>
+                </button>
+              </div>
+            </div>
+            <a
+              class="auth-forgot"
+              onclick="showToast('Password reset link sent', 'info')"
+              >Forgot password?</a
+            >
+            <div style="margin-top: 18px; margin-bottom: 10px">
+              <button onclick="handleLogin()" class="auth-submit-btn">
+                Initialize Session →
+              </button>
+            </div>
+          </div>
+
+          <!-- REGISTER -->
+          <div id="auth-register" style="display: none">
+            <p
+              style="
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: #6b8a96;
+                margin: 0 0 10px;
+              "
+            >
+              Register as
+            </p>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 16px;
+              "
+            >
+              <button
+                id="rtype-individual"
+                onclick="selectRegType('individual')"
+                style="
+                  padding: 11px 6px;
+                  border-radius: 6px;
+                  border: 2px solid #0097a7;
+                  background: #eef9fb;
+                  color: #007a8a;
+                  font-size: 12px;
+                  font-weight: 800;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+              >
+                👤 Individual
+              </button>
+              <button
+                id="rtype-ngo"
+                onclick="selectRegType('ngo')"
+                style="
+                  padding: 11px 6px;
+                  border-radius: 6px;
+                  border: 2px solid #c8dde8;
+                  background: #fff;
+                  color: #4a6572;
+                  font-size: 12px;
+                  font-weight: 700;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+              >
+                🏢 Community
+              </button>
+            </div>
+            <div
+              style="
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 10px;
+              "
+            >
+              <div>
+                <label class="auth-label">First Name</label
+                ><input
+                  id="reg-firstname"
+                  type="text"
+                  placeholder="Arjun"
+                  class="auth-input"
+                />
+              </div>
+              <div>
+                <label class="auth-label">Last Name</label
+                ><input
+                  id="reg-lastname"
+                  type="text"
+                  placeholder="Sharma"
+                  class="auth-input"
+                />
+              </div>
+            </div>
+            <div style="margin-bottom: 10px">
+              <label class="auth-label">Email</label
+              ><input
+                id="reg-email"
+                type="email"
+                placeholder="you@example.com"
+                class="auth-input"
+              />
+            </div>
+            <div style="margin-bottom: 10px">
+              <label class="auth-label">Phone</label
+              ><input
+                id="reg-phone"
+                type="tel"
+                placeholder="+91 9876543210"
+                class="auth-input"
+              />
+            </div>
+            <div id="org-fields" style="display: none">
+              <div style="margin-bottom: 10px">
+                <label class="auth-label">Organisation Name</label
+                ><input
+                  id="reg-orgname"
+                  type="text"
+                  placeholder="Red Cross India"
+                  class="auth-input"
+                />
+              </div>
+              <div style="margin-bottom: 10px">
+                <label class="auth-label">Org Type</label>
+                <select
+                  id="reg-orgtype"
+                  class="auth-input"
+                  style="appearance: auto"
+                >
+                  <option>NGO</option>
+                  <option>Hospital</option>
+                  <option>Fire Station</option>
+                  <option>Police</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div style="margin-bottom: 10px">
+                <label class="auth-label">Reg. Number</label
+                ><input
+                  id="reg-orgreg"
+                  type="text"
+                  placeholder="NGO-MH-0001"
+                  class="auth-input"
+                />
+              </div>
+            </div>
+            <div style="margin-bottom: 10px">
+              <label class="auth-label">Security Key</label>
+              <div style="position:relative">
+                <input
+                  id="reg-password"
+                  type="password"
+                  placeholder="Min 8 characters"
+                  class="auth-input"
+                  style="padding-right:42px"
+                />
+                <button type="button" onclick="togglePasswordVisibility('reg-password', this)"
+                  style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;color:#6b8a96;display:flex;align-items:center">
+                  <span class="material-symbols-outlined" style="font-size:20px">visibility</span>
+                </button>
+              </div>
+            </div>
+            <div style="margin-bottom: 16px">
+              <label class="auth-label">Govt. ID Proof</label>
+              <div
+                onclick="showToast('📎 File picker here', 'info')"
+                style="
+                  border: 2px dashed #a0c8d8;
+                  border-radius: 6px;
+                  padding: 18px;
+                  text-align: center;
+                  cursor: pointer;
+                  transition: all 0.2s;
+                "
+                onmouseover="
+                  this.style.borderColor = '#0097a7';
+                  this.style.background = '#eef9fb';
+                "
+                onmouseout="
+                  this.style.borderColor = '#a0c8d8';
+                  this.style.background = 'transparent';
+                "
+              >
+                <span
+                  class="material-symbols-outlined"
+                  style="font-size: 28px; color: #a0c8d8"
+                  >upload_file</span
+                >
+                <p
+                  style="
+                    font-size: 10px;
+                    color: #6b8a96;
+                    margin: 6px 0 0;
+                    font-weight: 600;
+                  "
+                >
+                  Aadhaar / Voter ID / Passport
+                </p>
+              </div>
+            </div>
+            <button onclick="handleRegister()" class="auth-submit-btn">
+              Create Account →
+            </button>
+            <p
+              style="
+                text-align: center;
+                font-size: 11px;
+                color: #6b8a96;
+                margin-top: 14px;
+              "
+            >
+              Have account?
+              <a
+                onclick="switchAuthTab('login')"
+                style="color: #0097a7; font-weight: 800; cursor: pointer"
+                >Sign in</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Emergency number badges -->
+      <div style="display: flex; gap: 8px; width: 100%; max-width: 360px">
+        <div class="emg-badge" onclick="window.location = 'tel:112'">
+          <span class="emg-icon"></span>
+          <span class="emg-num" style="color: #ef4444">112</span>
+          <span class="emg-label">Emergency</span>
+        </div>
+        <div class="emg-badge" onclick="window.location = 'tel:108'">
+          <span class="emg-icon"></span>
+          <span class="emg-num" style="color: #a855f7">108</span>
+          <span class="emg-label">Ambulance</span>
+        </div>
+        <div class="emg-badge" onclick="window.location = 'tel:101'">
+          <span class="emg-icon"></span>
+          <span class="emg-num" style="color: #f97316">101</span>
+          <span class="emg-label">Fire</span>
+        </div>
+        <div class="emg-badge" onclick="window.location = 'tel:1091'">
+          <span class="emg-icon"></span>
+          <span class="emg-num" style="color: #eab308">1091</span>
+          <span class="emg-label">Women</span>
+        </div>
+      </div>
+    </div>

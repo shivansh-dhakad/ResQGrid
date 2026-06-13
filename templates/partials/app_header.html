@@ -1,0 +1,65 @@
+      <!-- TOP BAR -->
+      <header
+        class="bg-surface sticky top-0 z-50 border-b border-border-base flex justify-between items-center w-full px-page-margin h-touch-target flex-shrink-0"
+        style="box-shadow: 0 1px 0 #e2e8f0; min-height: 60px"
+      >
+        <div class="flex items-center gap-2">
+          <img
+            src="/static/assets/logo.png"
+            alt="ResQGrid"
+            style="
+              width: 60px;
+              height: 60px;
+              object-fit: contain;
+              filter: drop-shadow(0 2px 6px rgba(0, 151, 167, 0.3));
+            "
+            onerror="this.style.display = 'none'"
+          />
+          <h1
+            class="text-headline-lg text-primary font-bold"
+          >
+             <span style="color: #214f98;">ResQ</span><span style="color: #f08a3c;">Grid</span>
+          </h1>
+        </div>
+        <div class="flex items-center gap-3">
+          <button
+            onclick="openModal('sos-modal')"
+            class="sos-fab-btn"
+            style="
+              position: relative;
+              width: auto;
+              height: auto;
+              padding: 7px 16px;
+              border-radius: 9999px;
+              font-size: 12px;
+              font-weight: 800;
+              letter-spacing: 1px;
+              box-shadow: 0 2px 8px rgba(245, 112, 10, 0.35);
+            "
+          >
+            <div
+              class="sos-pulse"
+              style="
+                position: absolute;
+                inset: 0;
+                background: #f08a3c;
+                border-radius: 9999px;
+                z-index: -1;
+              "
+            ></div>
+            SOS
+          </button>
+          <button
+            onclick="toggleNotif()"
+            class="relative w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors"
+          >
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >notifications</span
+            >
+            <span
+              id="notif-badge"
+              class="absolute top-1.5 right-1.5 w-2 h-2 bg-danger rounded-full border border-white hidden"
+            ></span>
+          </button>
+        </div>
+      </header>
