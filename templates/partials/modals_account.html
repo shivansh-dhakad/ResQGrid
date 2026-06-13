@@ -1,0 +1,283 @@
+    <!-- My Resources Modal -->
+    <div class="modal-overlay" id="my-resources-modal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-headline-md text-on-surface font-bold">
+              My Resources
+            </h2>
+            <p class="text-body-md text-text-muted">
+              Edit listings and respond to private requests.
+            </p>
+          </div>
+          <button
+            onclick="openNewResourceModal()"
+            class="w-10 h-10 rounded-full bg-tertiary text-white flex items-center justify-center"
+            title="Add resource"
+          >
+            <span class="material-symbols-outlined">add</span>
+          </button>
+        </div>
+        <div id="my-resources-list" class="space-y-3">
+          <p class="text-center text-text-muted py-6">Loading resources...</p>
+        </div>
+        <button
+          onclick="closeModal('my-resources-modal')"
+          class="w-full py-3 mt-4 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+
+    <!-- Alert Detail Modal -->
+    <div class="modal-overlay" id="alert-detail-modal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div id="alert-detail-content"></div>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="edit-profile-modal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h2 class="text-headline-md text-on-surface font-bold mb-4">
+          Edit Profile
+        </h2>
+        <div class="space-y-3 mb-5">
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label
+                class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+                >First Name</label
+              ><input
+                type="text"
+                id="edit-firstname"
+                class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+                >Last Name</label
+              ><input
+                type="text"
+                id="edit-lastname"
+                class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >Phone</label
+            ><input
+              type="tel"
+              id="edit-phone"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >City</label
+            ><input
+              type="text"
+              id="edit-city"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >State</label
+            ><input
+              type="text"
+              id="edit-state"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+            />
+          </div>
+        </div>
+        <button
+          onclick="saveProfileChanges()"
+          class="press-scale w-full py-3.5 bg-primary-container text-white rounded-xl font-bold text-body-md"
+        >
+          Save Changes
+        </button>
+        <button
+          onclick="closeModal('edit-profile-modal')"
+          class="w-full py-3 mt-2 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal-overlay" id="change-pass-modal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h2 class="text-headline-md text-on-surface font-bold mb-4">
+          Change Password
+        </h2>
+        <div class="space-y-3 mb-5">
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >Current Password</label
+            ><input
+              type="password"
+              placeholder="••••••••"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >New Password</label
+            ><input
+              type="password"
+              placeholder="Min 8 characters"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >Confirm Password</label
+            ><input
+              type="password"
+              placeholder="Repeat new password"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+            />
+          </div>
+        </div>
+        <button
+          onclick="
+            closeModal('change-pass-modal');
+            showToast('Password changed ✓', 'success');
+          "
+          class="press-scale w-full py-3.5 bg-primary-container text-white rounded-xl font-bold text-body-md"
+        >
+          Update Password
+        </button>
+        <button
+          onclick="closeModal('change-pass-modal')"
+          class="w-full py-3 mt-2 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- SOS Contacts Modal -->
+    <div class="modal-overlay" id="sos-contacts-modal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h2 class="text-headline-md text-on-surface font-bold mb-1">
+          SOS Contacts
+        </h2>
+        <p class="text-body-md text-text-muted mb-4">
+          These <strong>registered ResQGrid users</strong> will receive your
+          location on SOS.
+        </p>
+        <div id="sos-contacts-list" class="space-y-2 mb-4">
+          <p
+            class="text-center text-text-muted text-body-md py-3"
+            id="sos-contacts-empty"
+          >
+            No SOS contacts added yet.
+          </p>
+        </div>
+        <label
+          class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+          >Add ResQGrid User (phone or email)</label
+        >
+        <input
+          type="text"
+          placeholder="Search registered users…"
+          id="sos-contact-input"
+          class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md mb-3"
+        />
+        <div id="sos-user-search-result" class="mb-3 hidden"></div>
+        <button
+          onclick="searchSosUser()"
+          class="press-scale w-full py-3 bg-primary-container text-white rounded-xl font-bold text-body-md"
+        >
+          Search & Add
+        </button>
+        <button
+          onclick="closeModal('sos-contacts-modal')"
+          class="w-full py-3 mt-2 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div class="modal-overlay" id="chat-modal">
+      <div
+        class="modal-sheet"
+        style="
+          height: 80vh;
+          max-height: 600px;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <div class="modal-handle"></div>
+        <div
+          class="flex items-center justify-between border-b border-border-base pb-3 mb-3"
+        >
+          <div>
+            <h2
+              class="text-headline-md text-on-surface font-bold"
+              id="chat-title"
+            >
+              Chat
+            </h2>
+            <p class="text-caption text-text-muted">
+              Emergency In-App Messaging
+            </p>
+          </div>
+          <button
+            onclick="closeModal('chat-modal')"
+            class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container-low text-text-muted"
+          >
+            <span class="material-symbols-outlined text-base">close</span>
+          </button>
+        </div>
+
+        <!-- Messages Scrollable Body -->
+        <div
+          id="chat-messages"
+          class="flex-1 overflow-y-auto space-y-3 pr-1 mb-4"
+          style="min-height: 100px"
+        >
+          <p class="text-center text-text-muted py-10">No messages yet.</p>
+        </div>
+
+        <!-- Input Footer -->
+        <div class="flex gap-2 border-t border-border-base pt-3">
+          <input
+            type="text"
+            id="chat-input"
+            placeholder="Type a message…"
+            class="flex-1 px-4 py-3 rounded-lg border border-border-base text-body-md"
+            onkeydown="if (event.key === 'Enter') sendChatMessage();"
+          />
+          <button
+            onclick="sendChatMessage()"
+            class="px-5 bg-primary-container text-white rounded-lg text-label-bold font-bold hover:brightness-110 active:scale-95 transition-all"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>

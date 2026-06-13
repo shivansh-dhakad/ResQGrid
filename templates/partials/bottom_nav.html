@@ -1,0 +1,70 @@
+      <nav
+        class="bg-surface border-t border-border-base flex justify-around items-center px-gutter h-20 flex-shrink-0 z-50"
+        style="
+          box-shadow: 0 -4px 12px rgba(15, 23, 42, 0.08);
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        "
+      >
+        <button
+          onclick="switchTab('home')"
+          id="nav-home"
+          class="nav-item active flex flex-col items-center justify-center px-2 py-1 gap-0.5 transition-all"
+        >
+          <span
+            class="material-symbols-outlined nav-icon-ms text-primary"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >home</span
+          >
+          <span class="nav-label text-label-bold font-bold text-primary"
+            >Home</span
+          >
+        </button>
+        <button
+          onclick="switchTab('map')"
+          id="nav-map"
+          class="nav-item flex flex-col items-center justify-center px-2 py-1 gap-0.5 transition-all"
+        >
+          <span class="material-symbols-outlined nav-icon-ms text-secondary"
+            >map</span
+          >
+          <span class="nav-label text-label-bold font-bold text-secondary"
+            >Map</span
+          >
+        </button>
+        <button
+          onclick="switchTab('alerts')"
+          id="nav-alerts"
+          class="nav-item flex flex-col items-center justify-center px-2 py-1 gap-0.5 transition-all"
+        >
+          <span class="material-symbols-outlined nav-icon-ms text-secondary"
+            >warning</span
+          >
+          <span class="nav-label text-label-bold font-bold text-secondary"
+            >Alerts</span
+          >
+        </button>
+        <button
+          onclick="switchTab('community')"
+          id="nav-community"
+          class="nav-item flex flex-col items-center justify-center px-2 py-1 gap-0.5 transition-all"
+        >
+          <span class="material-symbols-outlined nav-icon-ms text-secondary"
+            >group</span
+          >
+          <span class="nav-label text-label-bold font-bold text-secondary"
+            >Community</span
+          >
+        </button>
+        <button
+          onclick="switchTab('settings')"
+          id="nav-settings"
+          class="nav-item flex flex-col items-center justify-center px-2 py-1 gap-0.5 transition-all"
+        >
+          <span class="material-symbols-outlined nav-icon-ms text-secondary"
+            >settings</span
+          >
+          <span class="nav-label text-label-bold font-bold text-secondary"
+            >Settings</span
+          >
+        </button>
+      </nav>

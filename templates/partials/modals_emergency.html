@@ -1,0 +1,364 @@
+    <!-- Emergency Contact Danger Modal (shown regardless of distance) -->
+    <div class="modal-overlay" id="contact-danger-modal">
+      <div
+        class="modal-sheet"
+        style="
+          background: linear-gradient(180deg, #fff5f5, #fff);
+          border-top: 3px solid #ef4444;
+          text-align: center;
+        "
+      >
+        <div class="modal-handle"></div>
+        <div
+          class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-3 animate-pulse"
+        >
+          <span
+            class="material-symbols-outlined text-danger text-4xl"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >emergency</span
+          >
+        </div>
+        <h2 class="text-headline-lg text-danger font-extrabold">
+          Your contact is in danger!
+        </h2>
+        <p class="text-body-md text-on-surface font-bold mt-2" id="contact-danger-name">
+          Your emergency contact
+        </p>
+        <p class="text-body-md text-text-muted mt-1">
+          has triggered an SOS and may need immediate help.
+        </p>
+        <button
+          id="contact-danger-view-btn"
+          class="press-scale w-full py-4 mt-5 bg-danger text-white rounded-xl font-extrabold text-body-lg tracking-wide"
+          style="box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4)"
+        >
+          View on Map
+        </button>
+        <button
+          onclick="closeModal('contact-danger-modal')"
+          class="w-full py-3 mt-2 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Dismiss
+        </button>
+      </div>
+    </div>
+
+    <!-- SOS Modal -->
+    <div class="modal-overlay" id="sos-modal">
+      <div
+        class="modal-sheet"
+        style="
+          background: linear-gradient(180deg, #fff8f6, #fff);
+          border-top: 3px solid #ef4444;
+        "
+      >
+        <div class="modal-handle"></div>
+        <div class="text-center mb-5">
+          <div
+            class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-3"
+          >
+            <span
+              class="material-symbols-outlined text-danger text-4xl"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >sos</span
+            >
+          </div>
+          <h2 class="text-headline-lg text-danger font-extrabold">
+            EMERGENCY SOS
+          </h2>
+          <p class="text-body-md text-text-muted mt-1">
+            Your real-time location will be shared immediately.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-3 mb-5">
+          <div
+            onclick="selectSosScope('all', this)"
+            class="sos-opt border-2 border-danger bg-red-50 rounded-xl p-4 text-center cursor-pointer transition-all"
+          >
+            <span
+              class="material-symbols-outlined text-2xl text-danger mb-1.5 block"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >groups</span
+            >
+            <h4 class="text-body-md font-bold text-on-surface">All Nearby</h4>
+            <p class="text-caption text-text-muted mt-0.5">
+              Alert everyone within 7km
+            </p>
+          </div>
+          <div
+            onclick="selectSosScope('contacts', this)"
+            class="sos-opt border-2 border-border-base bg-white rounded-xl p-4 text-center cursor-pointer transition-all hover:border-danger/40"
+          >
+            <span
+              class="material-symbols-outlined text-2xl text-on-surface-variant mb-1.5 block"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >supervised_user_circle</span
+            >
+            <h4 class="text-body-md font-bold text-on-surface">Trusted Only</h4>
+            <p class="text-caption text-text-muted mt-0.5">
+              Saved contacts only
+            </p>
+          </div>
+        </div>
+        <button
+          onclick="triggerSOS()"
+          class="press-scale w-full py-4 bg-danger text-white rounded-xl font-extrabold text-body-lg tracking-wide"
+          style="box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4)"
+        >
+          🆘 SEND SOS NOW
+        </button>
+        <button
+          onclick="closeModal('sos-modal')"
+          class="w-full py-3 mt-2 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Cancel — I'm safe
+        </button>
+      </div>
+    </div>
+
+    <!-- Post Alert Modal -->
+    <div class="modal-overlay" id="post-alert-modal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h2 class="text-headline-md text-on-surface font-bold mb-1">
+          🚨 Post Emergency Alert
+        </h2>
+        <div
+          class="inline-flex items-center gap-1.5 bg-blue-50 border border-secondary-container px-3 py-1 rounded-full mb-4"
+        >
+          <span
+            class="material-symbols-outlined text-tertiary text-sm"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >auto_awesome</span
+          >
+          <span class="text-caption text-tertiary font-bold"
+            >AI-powered risk classification via Groq</span
+          >
+        </div>
+
+        <label
+          class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+          >Describe your emergency</label
+        >
+        <textarea
+          id="alert-desc"
+          rows="3"
+          oninput="aiClassify(this.value)"
+          placeholder="e.g. My father collapsed at home, needs immediate medical help…"
+          class="w-full px-4 py-3 rounded-lg border border-border-base bg-white text-body-md text-on-surface mb-3 resize-none"
+        ></textarea>
+
+        <div
+          id="ai-risk-result"
+          style="display: none"
+          class="flex items-start gap-3 p-3 bg-orange-50 border border-outline-variant rounded-lg mb-4"
+        >
+          <span
+            class="material-symbols-outlined text-primary-container text-xl mt-0.5"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >smart_toy</span
+          >
+          <div>
+            <p class="text-caption text-text-muted font-bold">
+              AI Risk Assessment
+            </p>
+            <p
+              class="text-body-md text-on-surface font-semibold mt-0.5"
+              id="ai-risk-text"
+            >
+              Analysing…
+            </p>
+          </div>
+        </div>
+
+        <label
+          class="block text-caption font-bold text-text-muted uppercase mb-2"
+          >Category</label
+        >
+        <div class="grid grid-cols-4 gap-2 mb-4">
+          <div
+            onclick="selectCat(this)"
+            class="cat-chip selected"
+            data-cat="medical"
+          >
+            <span
+              class="material-symbols-outlined text-xl text-primary-container block mb-1"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >medical_services</span
+            ><span class="text-caption font-bold">Medical</span>
+          </div>
+          <div onclick="selectCat(this)" class="cat-chip" data-cat="blood">
+            <span
+              class="material-symbols-outlined text-xl text-danger block mb-1"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >bloodtype</span
+            ><span class="text-caption font-bold">Blood</span>
+          </div>
+          <div onclick="selectCat(this)" class="cat-chip" data-cat="food">
+            <span
+              class="material-symbols-outlined text-xl text-success block mb-1"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >restaurant</span
+            ><span class="text-caption font-bold">Food</span>
+          </div>
+          <div onclick="selectCat(this)" class="cat-chip" data-cat="shelter">
+            <span
+              class="material-symbols-outlined text-xl block mb-1"
+              style="
+                font-variation-settings: &quot;FILL&quot; 1;
+                color: #d97706;
+              "
+              >home_work</span
+            ><span class="text-caption font-bold">Shelter</span>
+          </div>
+          <div onclick="selectCat(this)" class="cat-chip" data-cat="transport">
+            <span
+              class="material-symbols-outlined text-xl text-tertiary block mb-1"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >directions_car</span
+            ><span class="text-caption font-bold">Transport</span>
+          </div>
+          <div onclick="selectCat(this)" class="cat-chip" data-cat="fire">
+            <span
+              class="material-symbols-outlined text-xl text-danger block mb-1"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >local_fire_department</span
+            ><span class="text-caption font-bold">Fire</span>
+          </div>
+          <div onclick="selectCat(this)" class="cat-chip" data-cat="flood">
+            <span
+              class="material-symbols-outlined text-xl text-tertiary block mb-1"
+              style="font-variation-settings: &quot;FILL&quot; 1"
+              >water</span
+            ><span class="text-caption font-bold">Flood</span>
+          </div>
+          <div onclick="selectCat(this)" class="cat-chip" data-cat="other">
+            <span
+              class="material-symbols-outlined text-xl text-on-surface-variant block mb-1"
+              >help</span
+            ><span class="text-caption font-bold">Other</span>
+          </div>
+        </div>
+
+        <label
+          class="block text-caption font-bold text-text-muted uppercase mb-2"
+          >Proof / Evidence</label
+        >
+        <div
+          onclick="showToast('📷 Camera/gallery opens here', 'info')"
+          class="border-2 border-dashed border-outline-variant rounded-xl p-5 text-center cursor-pointer hover:border-primary-container hover:bg-surface-container-low transition-all mb-4"
+        >
+          <span class="material-symbols-outlined text-3xl text-outline-variant"
+            >photo_camera</span
+          >
+          <p class="text-caption text-text-muted mt-1.5">
+            Upload photo as proof of incident
+          </p>
+        </div>
+
+        <div
+          class="flex items-center justify-between p-3 bg-surface-container-low rounded-xl mb-5"
+        >
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-surface-variant"
+              >visibility_off</span
+            ><span class="text-body-md text-on-surface font-semibold"
+              >Post anonymously</span
+            >
+          </div>
+          <label class="rq-toggle"
+            ><input type="checkbox" id="anon-toggle" /><span
+              class="rq-slider"
+            ></span
+          ></label>
+        </div>
+
+        <button
+          onclick="submitAlert()"
+          class="press-scale w-full py-3.5 bg-primary-container text-white rounded-xl font-bold text-body-md shadow-elevated"
+        >
+          📡 Broadcast Alert
+        </button>
+        <button
+          onclick="closeModal('post-alert-modal')"
+          class="w-full py-3 mt-2 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
+    <!-- Post Resource Modal -->
+    <div class="modal-overlay" id="post-resource-modal">
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h2 class="text-headline-md text-on-surface font-bold mb-4" id="resource-modal-title">
+          🤝 List a Resource
+        </h2>
+        <div class="space-y-3 mb-5">
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >Resource Type</label
+            >
+            <select
+              id="res-type"
+              class="w-full px-4 py-3 rounded-lg border border-border-base bg-white text-body-md text-on-surface"
+            >
+              <option value="blood">🩸 Blood Supply</option>
+              <option value="food">🍱 Food / Ration</option>
+              <option value="shelter">🏠 Shelter / Space</option>
+              <option value="transport">🚗 Transport</option>
+              <option value="medicine">💊 Medicine</option>
+              <option value="equipment">🔦 Equipment</option>
+            </select>
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >Title</label
+            ><input
+              type="text"
+              id="res-title"
+              placeholder="e.g. O+ blood available immediately"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md"
+            />
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >Description</label
+            ><textarea
+              id="res-desc"
+              rows="2"
+              placeholder="Quantity, conditions, pickup point…"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md resize-none"
+            ></textarea>
+          </div>
+          <div>
+            <label
+              class="block text-caption font-bold text-text-muted uppercase mb-1.5"
+              >Available Until</label
+            ><input
+              type="datetime-local"
+              id="res-until"
+              class="w-full px-4 py-3 rounded-lg border border-border-base text-body-md bg-white"
+            />
+          </div>
+        </div>
+        <button
+          onclick="submitResource()"
+          id="resource-submit-btn"
+          class="press-scale w-full py-3.5 bg-tertiary text-white rounded-xl font-bold text-body-md shadow-elevated"
+        >
+          📍 Pin on Map
+        </button>
+        <button
+          onclick="closeModal('post-resource-modal')"
+          class="w-full py-3 mt-2 border border-border-base text-on-surface rounded-xl text-body-md font-semibold hover:bg-surface-container-low transition-all"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+
