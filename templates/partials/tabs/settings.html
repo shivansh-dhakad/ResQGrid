@@ -1,0 +1,363 @@
+        <!-- ── SETTINGS TAB ── -->
+        <div class="tab-panel" id="panel-settings">
+          <div
+            class="bg-white border-b border-border-base px-page-margin pt-6 pb-5 text-center max-w-3xl mx-auto"
+          >
+            <div class="relative inline-block mb-3">
+              <div
+                id="profile-avatar"
+                class="w-20 h-20 rounded-full bg-primary-container flex items-center justify-center text-white text-3xl font-black shadow-elevated border-4 border-white mx-auto"
+              ></div>
+              <div
+                class="absolute bottom-0 right-0 w-6 h-6 bg-success rounded-full border-2 border-white flex items-center justify-center"
+              ></div>
+            </div>
+            <h2
+              class="text-headline-lg text-on-surface font-bold"
+              id="profile-name"
+            ></h2>
+            <div
+              class="inline-flex items-center gap-1.5 bg-orange-50 border border-primary-container/30 px-3 py-1 rounded-full mt-1 mb-2"
+            >
+              <span
+                class="material-symbols-outlined text-primary-container text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >military_tech</span
+              >
+              <span
+                class="text-primary text-label-bold font-bold"
+                id="profile-rank-pts"
+                >Member</span
+              >
+            </div>
+            <div
+              id="profile-community-badge"
+              class="hidden inline-flex items-center gap-1.5 bg-blue-50 border border-secondary-container px-3 py-1 rounded-full mt-0 mb-4"
+            >
+              <span
+                class="material-symbols-outlined text-tertiary text-sm"
+                style="font-variation-settings: &quot;FILL&quot; 1"
+                >corporate_fare</span
+              >
+              <span
+                class="text-tertiary text-label-bold font-bold"
+                id="profile-community-name"
+              ></span>
+              <button
+                onclick="leaveCommunity()"
+                title="Leave community"
+                class="material-symbols-outlined text-tertiary text-sm ml-0.5 hover:text-error"
+                >close</button
+              >
+            </div>
+            <div class="grid grid-cols-3 gap-3 max-w-xs mx-auto">
+              <div
+                class="flex flex-col items-center p-3 rounded-xl bg-surface-container-low"
+              >
+                <span
+                  class="text-stat-lg text-on-surface font-extrabold"
+                  id="profile-stat-helped"
+                  >—</span
+                >
+                <span class="text-caption text-text-muted">Helped</span>
+              </div>
+              <div
+                class="flex flex-col items-center p-3 rounded-xl bg-surface-container-low"
+              >
+                <span
+                  class="text-stat-lg text-on-surface font-extrabold"
+                  id="profile-stat-resources"
+                  >—</span
+                >
+                <span class="text-caption text-text-muted">Resources</span>
+              </div>
+              <div
+                class="flex flex-col items-center p-3 rounded-xl bg-surface-container-low"
+              >
+                <span
+                  class="text-stat-lg text-on-surface font-extrabold"
+                  id="profile-stat-rank"
+                  >—</span
+                >
+                <span class="text-caption text-text-muted">Rank</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="max-w-3xl mx-auto px-page-margin py-5 space-y-5">
+            <div>
+              <h3
+                class="text-label-bold text-text-muted font-bold uppercase px-1 mb-2"
+              >
+                Account
+              </h3>
+              <div
+                class="bg-white border border-border-base rounded-xl overflow-hidden shadow-card"
+              >
+                <button
+                  onclick="openEditProfileModal()"
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-primary-container"
+                    >
+                      <span class="material-symbols-outlined">person</span>
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >Edit Profile</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+                <div class="h-px bg-border-base mx-4"></div>
+                <button
+                  onclick="openModal('change-pass-modal')"
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-tertiary"
+                    >
+                      <span class="material-symbols-outlined">lock</span>
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >Change Password</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+                <div class="h-px bg-border-base mx-4"></div>
+                <button
+                  onclick="openModal('sos-contacts-modal')"
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-danger"
+                    >
+                      <span class="material-symbols-outlined"
+                        >emergency_share</span
+                      >
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >SOS Contacts</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <h3
+                class="text-label-bold text-text-muted font-bold uppercase px-1 mb-2"
+              >
+                Activity
+              </h3>
+              <div
+                class="bg-white border border-border-base rounded-xl overflow-hidden shadow-card"
+              >
+                <button
+                  onclick="
+                    switchTab('alerts');
+                    switchAlertSeg('mine');
+                  "
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-primary-container"
+                    >
+                      <span class="material-symbols-outlined">article</span>
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >My Alerts</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+                <div class="h-px bg-border-base mx-4"></div>
+                <button
+                  onclick="
+                    switchTab('alerts');
+                    switchAlertSeg('responding');
+                  "
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-success"
+                    >
+                      <span class="material-symbols-outlined">handshake</span>
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >Responding To</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+                <div class="h-px bg-border-base mx-4"></div>
+                <button
+                  onclick="openMyResourcesModal()"
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-tertiary"
+                    >
+                      <span class="material-symbols-outlined">inventory_2</span>
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >My Resources</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+                <div class="h-px bg-border-base mx-4"></div>
+                <button
+                  onclick="switchTab('community')"
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center"
+                      style="color: #d97706"
+                    >
+                      <span class="material-symbols-outlined"
+                        >emoji_events</span
+                      >
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >Leaderboard</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <h3
+                class="text-label-bold text-text-muted font-bold uppercase px-1 mb-2"
+              >
+                Preferences
+              </h3>
+              <div
+                class="bg-white border border-border-base rounded-xl overflow-hidden shadow-card"
+              >
+                <div class="flex items-center justify-between p-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center text-primary-container"
+                    >
+                      <span class="material-symbols-outlined"
+                        >notifications_active</span
+                      >
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >Notifications</span
+                    >
+                  </div>
+                  <label class="rq-toggle"
+                    ><input type="checkbox" checked /><span
+                      class="rq-slider"
+                    ></span
+                  ></label>
+                </div>
+                <div class="h-px bg-border-base mx-4"></div>
+                <div class="flex items-center justify-between p-4">
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-tertiary"
+                    >
+                      <span class="material-symbols-outlined"
+                        >share_location</span
+                      >
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >Location Sharing</span
+                    >
+                  </div>
+                  <label class="rq-toggle"
+                    ><input type="checkbox" checked /><span
+                      class="rq-slider"
+                    ></span
+                  ></label>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3
+                class="text-label-bold text-text-muted font-bold uppercase px-1 mb-2"
+              >
+                Other
+              </h3>
+              <div
+                class="bg-white border border-border-base rounded-xl overflow-hidden shadow-card"
+              >
+                <button
+                  onclick="showToast('Opening privacy policy…', 'info')"
+                  class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center text-secondary"
+                    >
+                      <span class="material-symbols-outlined">policy</span>
+                    </div>
+                    <span class="text-body-lg font-semibold text-on-surface"
+                      >Privacy Policy</span
+                    >
+                  </div>
+                  <span
+                    class="material-symbols-outlined text-outline-variant group-hover:translate-x-0.5 transition-transform"
+                    >chevron_right</span
+                  >
+                </button>
+                <div class="h-px bg-border-base mx-4"></div>
+                <button
+                  onclick="handleLogout()"
+                  class="w-full flex items-center justify-between p-4 hover:bg-red-50 transition-colors group"
+                >
+                  <div class="flex items-center gap-3">
+                    <div
+                      class="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center text-danger"
+                    >
+                      <span class="material-symbols-outlined">logout</span>
+                    </div>
+                    <span class="text-body-lg font-semibold text-danger"
+                      >Sign Out</span
+                    >
+                  </div>
+                  <span class="material-symbols-outlined text-outline-variant"
+                    >chevron_right</span
+                  >
+                </button>
+              </div>
+            </div>
+            <div class="h-4"></div>
+          </div>
+        </div>
