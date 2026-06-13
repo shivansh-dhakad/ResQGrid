@@ -1,0 +1,217 @@
+        <!-- ── HOME TAB ── -->
+        <div class="tab-panel active" id="panel-home">
+          <main class="px-page-margin pt-5 max-w-3xl mx-auto space-y-5">
+            <!-- Greeting -->
+            <section>
+              <h2
+                class="text-headline-lg text-on-surface font-bold"
+                id="home-greeting"
+              >
+                Welcome
+              </h2>
+              <p class="text-body-md text-text-muted mt-0.5">
+                Standby status:
+                <span class="text-success font-bold">Active Responder</span>
+              </p>
+            </section>
+
+            <!-- Disaster Alert Banner (populated dynamically from DB) -->
+            <section
+              class="relative overflow-hidden rounded-xl border border-outline-variant bg-white shadow-card"
+              id="disaster-banner"
+              style="display: none"
+            >
+              <div
+                class="absolute top-0 left-0 w-1.5 h-full bg-primary-container rounded-l-xl"
+              ></div>
+              <div class="p-4 pl-6 flex items-start gap-3">
+                <div
+                  class="bg-orange-100 p-2.5 rounded-lg text-primary-container flex-shrink-0"
+                >
+                  <span
+                    class="material-symbols-outlined"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >warning</span
+                  >
+                </div>
+                <div class="flex-1">
+                  <div class="flex justify-between items-start mb-0.5">
+                    <span
+                      class="text-caption font-bold text-primary-container uppercase tracking-wider"
+                      id="banner-label"
+                    ></span>
+                    <span
+                      class="text-caption text-text-muted font-mono"
+                      id="banner-time"
+                    ></span>
+                  </div>
+                  <h3
+                    class="text-headline-md text-on-surface font-bold"
+                    id="banner-title"
+                  ></h3>
+                  <p
+                    class="text-body-md text-on-surface-variant mt-1"
+                    id="banner-desc"
+                  ></p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Stats Grid -->
+            <section class="grid grid-cols-3 gap-gutter">
+              <!-- Alerts card → navigates to Alerts tab -->
+              <button
+                onclick="switchTab('alerts')"
+                class="press-scale bg-white border border-border-base p-4 rounded-xl shadow-card text-center active:bg-surface-container-low transition-colors"
+              >
+                <p class="text-caption text-text-muted uppercase font-bold mb-1">Alerts</p>
+                <p class="text-stat-lg text-primary font-extrabold" id="stat-alerts">0</p>
+                <span class="material-symbols-outlined text-primary" style="font-size:14px;opacity:0.6">arrow_forward</span>
+              </button>
+              <!-- Resources card → scrolls to Available Resources section on home -->
+              <button
+                onclick="document.getElementById('home-resources-list').scrollIntoView({behavior:'smooth',block:'start'})"
+                class="press-scale bg-white border border-border-base p-4 rounded-xl shadow-card text-center active:bg-surface-container-low transition-colors"
+              >
+                <p class="text-caption text-text-muted uppercase font-bold mb-1">Resources</p>
+                <p class="text-stat-lg text-on-surface font-extrabold" id="stat-resources">0</p>
+                <span class="material-symbols-outlined text-on-surface-variant" style="font-size:14px;opacity:0.6">arrow_forward</span>
+              </button>
+              <!-- Responding card → navigates to Alerts tab, "Responding" segment -->
+              <button
+                onclick="switchTab('alerts'); setTimeout(() => { const btn = document.getElementById('seg-responding'); if(btn){ switchAlertSeg('responding', btn); } }, 80);"
+                class="press-scale bg-white border border-border-base p-4 rounded-xl shadow-card text-center active:bg-surface-container-low transition-colors"
+              >
+                <p class="text-caption text-text-muted uppercase font-bold mb-1">Responding</p>
+                <p class="text-stat-lg font-extrabold" style="color:#0062a0" id="stat-responding">0</p>
+                <span class="material-symbols-outlined" style="font-size:14px;opacity:0.6;color:#0062a0">arrow_forward</span>
+              </button>
+            </section>
+
+            <!-- Action Bento -->
+            <section class="grid grid-cols-2 gap-3">
+              <button
+                onclick="openModal('post-alert-modal')"
+                class="press-scale group relative flex flex-col items-start justify-end p-5 h-36 bg-primary-container text-white rounded-xl overflow-hidden"
+              >
+                <div
+                  class="absolute top-3 right-3 opacity-20 group-hover:opacity-35 transition-opacity"
+                >
+                  <span class="material-symbols-outlined text-6xl"
+                    >campaign</span
+                  >
+                </div>
+                <span
+                  class="material-symbols-outlined mb-1.5 text-3xl"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >add_alert</span
+                >
+                <h4 class="text-headline-md font-bold">Post Alert</h4>
+                <p class="text-caption text-white/80 mt-0.5">
+                  Broadcast emergency help
+                </p>
+              </button>
+              <button
+                onclick="openNewResourceModal()"
+                class="press-scale group relative flex flex-col items-start justify-end p-5 h-36 bg-tertiary text-white rounded-xl overflow-hidden"
+              >
+                <div
+                  class="absolute top-3 right-3 opacity-20 group-hover:opacity-35 transition-opacity"
+                >
+                  <span class="material-symbols-outlined text-6xl"
+                    >inventory_2</span
+                  >
+                </div>
+                <span
+                  class="material-symbols-outlined mb-1.5 text-3xl"
+                  style="font-variation-settings: &quot;FILL&quot; 1"
+                  >list_alt</span
+                >
+                <h4 class="text-headline-md font-bold">List Resource</h4>
+                <p class="text-caption text-white/80 mt-0.5">
+                  Offer supplies or skills
+                </p>
+              </button>
+            </section>
+
+            <!-- Nearby Alerts -->
+            <section>
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="text-headline-md text-on-surface font-bold">
+                  Nearby Emergencies
+                </h3>
+                <button
+                  onclick="switchTab('alerts')"
+                  class="text-primary text-label-bold font-bold flex items-center gap-0.5"
+                >
+                  See all
+                  <span class="material-symbols-outlined text-sm"
+                    >arrow_forward</span
+                  >
+                </button>
+              </div>
+              <div class="space-y-3" id="home-alerts-list"></div>
+            </section>
+
+            <!-- Available Resources -->
+            <section>
+              <div class="flex justify-between items-center mb-3">
+                <h3 class="text-headline-md text-on-surface font-bold">
+                  Available Resources
+                </h3>
+                <button
+                  onclick="openMyResourcesModal()"
+                  class="text-tertiary text-label-bold font-bold flex items-center gap-0.5"
+                >
+                  My resources
+                  <span class="material-symbols-outlined text-sm"
+                    >inventory</span
+                  >
+                </button>
+              </div>
+              <div class="space-y-3" id="home-resources-list"></div>
+            </section>
+
+            <!-- Map Snippet -->
+            <section
+              class="rounded-xl overflow-hidden border border-border-base relative shadow-card h-44 cursor-pointer"
+              onclick="switchTab('map')"
+            >
+              <div
+                id="home-map-preview"
+                class="w-full h-full bg-surface-container-low flex items-center justify-center"
+              >
+                <div class="text-center text-text-muted">
+                  <span class="material-symbols-outlined text-4xl">map</span>
+                  <p class="text-body-md mt-1">Tap to open live map</p>
+                </div>
+              </div>
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent pointer-events-none"
+              ></div>
+              <div
+                class="absolute bottom-3 left-3 right-3 flex justify-between items-center"
+              >
+                <span
+                  class="text-label-bold text-white bg-black/40 backdrop-blur-sm px-3 py-1.5 rounded-full"
+                  >Live Emergency Map</span
+                >
+                <button
+                  onclick="
+                    event.stopPropagation();
+                    switchTab('map');
+                  "
+                  class="bg-white text-on-surface w-9 h-9 rounded-full shadow-elevated flex items-center justify-center"
+                >
+                  <span
+                    class="material-symbols-outlined text-sm"
+                    style="font-variation-settings: &quot;FILL&quot; 1"
+                    >my_location</span
+                  >
+                </button>
+              </div>
+            </section>
+
+            <div class="h-4"></div>
+          </main>
+        </div>
